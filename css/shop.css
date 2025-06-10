@@ -1,0 +1,36 @@
+body {
+    background-color: #121212;
+    color: #fff;
+    font-family: "Vazir", sans-serif;
+  }
+  
+  .card {
+    background-color: #1e1e1e;
+    border: none;
+    box-shadow: 0 0 10px rgba(255, 204, 0, 0.4);
+  }
+  
+  .btn {
+    background-color: #ffcc00;
+    color: #000;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .btn:hover {
+    background-color: #e6b800;
+  }
+  
+  @media (max-width: 576px) {
+    h1 {
+      font-size: 1.8rem;
+    }
+    .card h3 {
+      font-size: 1.2rem;
+    }
+    .btn {
+      font-size: 1rem;
+    }
+  }
+
+  

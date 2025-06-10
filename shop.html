@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Starz Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="css/shop.css" />
+</head>
+<body class="bg-dark text-light">
+  <div class="container py-5">
+    <h1 class="text-center mb-4">🛒 Starz Shop</h1>
+    <p class="text-center">Your Starz Balance: <span id="starzBalance">0</span></p>
+
+    <div class="mb-4 p-3 bg-secondary rounded-3">
+      <h4 class="text-center mb-3">Buy Premium Subscription</h4>
+      <div id="premiumContainer" class="row gy-3">
+        <!-- Premium options will be injected here -->
+      </div>
+    </div>
+
+    <div class="row" id="coinsContainer">
+      <!-- Crypto coin cards go here -->
+    </div>
+  </div>
+  <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <a href="index.html" class="back-link" style="text-decoration: none; color: #ccc; font-size: 18px;">⬅ Back to Game</a>
+  </div>
+  
+  <script src="js/shop.js"></script>
+</body>
+</html>

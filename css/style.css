@@ -1,0 +1,96 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  h1.neon-glow {
+    color: #00f0ff;
+    text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 30px #00f0ff;
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #ffd700;
+  }
+  
+  .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    overflow: hidden;
+  }
+  
+  .star-button {
+    font-size: 100px;
+    background: none;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, filter 0.2s;
+    filter: drop-shadow(0 0 8px gold);
+  }
+  
+  .star-button:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 12px #ffd700);
+  }
+  
+  .star-button:active {
+    transform: scale(1.2);
+  }
+  
+  .icon-row {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    justify-content: center;
+  }
+  
+  .icon-link {
+    font-size: 35px;
+    color: #ffffff;
+    transition: transform 0.2s, color 0.2s;
+  }
+  
+  .icon-link:hover {
+    color: #00f0ff;
+    transform: scale(1.2);
+  }
+  .click-effect {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    color: gold;
+    animation: floatUp 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 999;
+  }
+  
+  @keyframes floatUp {
+    0% {
+      opacity: 1;
+      transform: translateY(0px);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-60px);
+    }
+  }
+
+  .click-effect {
+    position: absolute;
+    color: #ff0;
+    font-weight: bold;
+    animation: moveUp 1s ease-out forwards;
+    pointer-events: none;
+  }
+  
+  @keyframes moveUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-40px); opacity: 0; }
+  }
+  
