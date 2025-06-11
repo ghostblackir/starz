@@ -1,67 +1,86 @@
+<!-- coin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>💰 Daily Coin</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link rel="stylesheet" href="css/style.css" />
+  <title>Get Free Starz</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <style>
-    #balance {
-      margin-top: 15px;
-      font-weight: bold;
-      font-size: 1.2rem;
-      color: #ffc107;
+    body {
+      background-color: #111;
+      color: #fff;
     }
+    .card {
+      background-color: #1c1c1c;
+      border: 1px solid #333;
+    }
+    a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
   </style>
 </head>
-<body class="bg-dark text-light d-flex flex-column align-items-center justify-content-center vh-100">
-  <h1 class="mb-4">💰 Daily Coin & Challenges</h1>
+<body>
+  <div class="container my-5">
+    <h2 class="text-center mb-4">🎁 Earn Free Starz</h2>
 
-  <!-- ورود به کانال -->
-  <div class="card text-dark mb-3" style="width: 20rem;">
-    <div class="card-body">
-      <h5 class="card-title">🎯 Join Our Channels</h5>
-      <p class="card-text">Join any of the channels below and claim 100 ⭐ Starz for each!</p>
-      <button class="btn btn-primary mb-2" onclick="openChannel('aqay_ghost')">Join @aqay_ghost</button><br/>
-      <button class="btn btn-primary mb-2" onclick="openChannel('zed_exe')">Join @zed_exe</button><br/>
-      <button class="btn btn-primary mb-2" onclick="openChannel('blackghost_ir')">Join @blackghost_ir</button>
-
-      <div id="confirmSection" style="margin-top:15px; display:none;">
-        <p>Did you join the channel? Click confirm to claim your 100 ⭐ Starz!</p>
-        <button class="btn btn-success" id="confirmBtn">Confirm</button>
-        <button class="btn btn-danger" id="cancelBtn">Cancel</button>
-      </div>
+    <!-- Daily Reward -->
+    <div class="card p-3 mb-4">
+      <h5>🌞 Daily Reward</h5>
+      <p>Claim once per day and earn <strong>+5 Starz</strong>.</p>
+      <button id="dailyBtn" class="btn btn-warning">Claim Now</button>
+      <div id="dailyStatus" class="mt-2 text-success"></div>
     </div>
-  </div>
 
-  <!-- چالش کلیک روزانه -->
-  <div class="card text-dark mb-3" style="width: 20rem;">
-    <div class="card-body">
-      <h5 class="card-title">🔥 Daily Click Challenge</h5>
-      <p class="card-text">Click between 50 - 100 times today to earn 50-60 coins!</p>
-      <button id="clickButton" class="btn btn-secondary mb-2">Click Me!</button>
-      <p>Clicks today: <span id="clickCount">0</span></p>
-      <button class="btn btn-primary" onclick="claimClickReward()">Claim Coins</button>
+    <!-- Daily Challenge -->
+    <div class="card p-3 mb-4">
+      <h5>🎯 Daily Challenge</h5>
+      <p>Click 50 times in mining to earn <strong>+10 Starz</strong>.</p>
+      <button id="challengeBtn" class="btn btn-success">Claim Challenge Reward</button>
+      <div id="challengeStatus" class="mt-2 text-info"></div>
     </div>
-  </div>
 
-  <!-- سکه روزانه -->
-  <div class="card text-dark mb-3" style="width: 20rem;">
-    <div class="card-body">
-      <h5 class="card-title">🗓️ Daily Coin Reward</h5>
-      <p class="card-text">Claim a random reward of 25 - 30 coins once a day.</p>
-      <button class="btn btn-warning" onclick="claimDailyCoin()">Get Daily Coins</button>
+    <!-- Join Telegram Channels -->
+    <div class="card p-3 mb-4">
+      <h5>📲 Join Our Telegram Channels</h5>
+      <p>Join to earn <strong>+100 Starz</strong> each:</p>
+      <ul class="list-unstyled">
+        <li>
+          <a href="https://t.me/aqay_ghost" target="_blank">Channel 1</a>
+          <button class="btn btn-sm btn-outline-light ms-2" onclick="claimTelegramReward(1)">Claim</button>
+        </li>
+        <li>
+          <a href="https://t.me/zed_exe" target="_blank">Channel 2</a>
+          <button class="btn btn-sm btn-outline-light ms-2" onclick="claimTelegramReward(2)">Claim</button>
+        </li>
+        <li>
+          <a href="https://t.me/blackghost_ir" target="_blank">Channel 3</a>
+          <button class="btn btn-sm btn-outline-light ms-2" onclick="claimTelegramReward(3)">Claim</button>
+        </li>
+      </ul>
+      <div id="telegramStatus" class="mt-2 text-info"></div>
     </div>
-  </div>
 
-  <!-- نمایش مقدار استارز و کوین -->
-  <div id="balance">
-    ⭐ Starz: <span id="starzDisplay">0</span> | 💰 Coins: <span id="coinsDisplay">0</span>
+    <!-- Join Telegram Group -->
+    <div class="card p-3 mb-4">
+      <h5>💬 Join Our Telegram Group</h5>
+      <p>Join group and earn <strong>+100 Starz</strong>.</p>
+      <a href="https://t.me/aqay_ghost_group" target="_blank" class="btn btn-primary">Join Group</a>
+      <button class="btn btn-outline-light ms-2" onclick="claimTelegramReward('group')">Claim</button>
+      <div id="groupStatus" class="mt-2 text-info"></div>
+    </div>
+
   </div>
-  <a href="index.html" class="back-link">⬅ Back to Game</a>
-  <!-- اسکریپت جداگانه -->
+  
+  <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;">
+    <a href="index.html" class="back-link" style="text-decoration: none; color: #ccc; font-size: 18px;">⬅ Back to Game</a>
+  </div>
+  
   <script src="js/coin.js"></script>
 </body>
 </html>
