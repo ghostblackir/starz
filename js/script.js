@@ -105,8 +105,20 @@ function showClickEffect(x, y, text) {
   }, 1000);
 }
 
+function updateMainCoinDisplay() {
+  coins = parseInt(localStorage.getItem("coins")) || 0;
+  document.getElementById("main-coin-count").textContent = `🪙 Coins: ${coins}`;
+}
+
+document.getElementById('clickButton').addEventListener('click', () => {
+  let clicks = parseInt(localStorage.getItem("clicks")) || 0;
+  clicks++;
+  localStorage.setItem("clicks", clicks);
+  document.getElementById('clickCount').textContent = clicks;
+});
 
 // شروع اولیه
 updateDisplay();
 updateTimer();
+updateMainCoinDisplay();
 
