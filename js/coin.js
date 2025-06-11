@@ -1,96 +1,84 @@
-// دریافت سکه‌ها از localStorage یا مقدار پیش‌فرض 0
-let coins = Number(localStorage.getItem("coins")) || 0;
+let starz = parseFloat(localStorage.getItem("starz")) || 0;
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+let currentChannel = null;
 
-// آپدیت نمایش سکه‌ها
-function updateCoinDisplay() {
-  const coinEl = document.getElementById("coin-count");
-  if (coinEl) coinEl.textContent = coins;
+function updateDisplay() {
+  document.getElementById('starzDisplay').textContent = starz;
+  document.getElementById('coinsDisplay').textContent = coins;
 }
 
-// ذخیره سکه‌ها
-function saveCoins() {
-  localStorage.setItem("coins", coins);
-}
-
-// بارگذاری وضعیت کانال‌ها
-function loadChannelsStatus() {
-  document.querySelectorAll(".channel").forEach(channel => {
-    const id = channel.getAttribute("data-id");
-    const joinTime = Number(localStorage.getItem(`joined_${id}`));
-    const claimed = localStorage.getItem(`claimed_${id}`) === "true";
-
-    const now = Date.now();
-    const oneDay = 24 * 60 * 60 * 1000;
-    const joined = joinTime && (now - joinTime < oneDay);
-
-    const joinBtn = channel.querySelector(".join-btn");
-    const claimBtn = channel.querySelector(".claim-btn");
-    const statusSpan = channel.querySelector(".status");
-
-    if (claimed) {
-      joinBtn.style.display = "none";
-      claimBtn.style.display = "none";
-      statusSpan.textContent = "Reward claimed! 🎉";
-      statusSpan.className = "status claimed";
-    } else if (joined) {
-      joinBtn.style.display = "none";
-      claimBtn.style.display = "inline-block";
-      statusSpan.textContent = "You joined the channel. Claim your coins!";
-      statusSpan.className = "status joined";
-    } else {
-      joinBtn.style.display = "inline-block";
-      claimBtn.style.display = "none";
-      statusSpan.textContent = "Please join the channel first.";
-      statusSpan.className = "status not-joined";
-    }
-  });
-}
-
-// دکمه "من جوین شدم"
-function joinChannel(id) {
-  const now = Date.now();
-  localStorage.setItem(`joined_${id}`, now.toString());
-  loadChannelsStatus();
-}
-
-// دکمه "دریافت سکه"
-function claimCoins(id) {
-  if (localStorage.getItem(`claimed_${id}`) === "true") {
-    alert("You already claimed this reward.");
+function openChannel(channelName) {
+  if (localStorage.getItem(`joinedChannel_${channelName}`)) {
+    alert(`❌ You already claimed for @${channelName}`);
     return;
   }
 
-  const joinTime = Number(localStorage.getItem(`joined_${id}`));
-  const now = Date.now();
-  const oneDay = 24 * 60 * 60 * 1000;
-
-  if (!joinTime || (now - joinTime > oneDay)) {
-    alert("The join time expired. Please join again.");
-    localStorage.removeItem(`joined_${id}`);
-    loadChannelsStatus();
-    return;
-  }
-
-  coins += 100;
-  saveCoins();
-  updateCoinDisplay();
-  localStorage.setItem(`claimed_${id}`, "true");
-  alert("You have received 100 coins!");
-  loadChannelsStatus();
+  currentChannel = channelName;
+  window.open(`https://t.me/${channelName}`, '_blank');
+  document.getElementById('confirmSection').style.display = 'block';
 }
 
-// وقتی صفحه لود شد
 document.addEventListener("DOMContentLoaded", () => {
-  updateCoinDisplay();
-  loadChannelsStatus();
+  document.getElementById('confirmBtn').addEventListener('click', () => {
+    if (!currentChannel) return;
 
-  document.querySelectorAll(".channel").forEach(channel => {
-    const id = channel.getAttribute("data-id");
+    starz += 100;
+    localStorage.setItem("starz", starz);
+    localStorage.setItem(`joinedChannel_${currentChannel}`, "true");
 
-    const joinBtn = channel.querySelector(".join-btn");
-    const claimBtn = channel.querySelector(".claim-btn");
+    alert(`🎉 You earned 100 Starz for joining @${currentChannel}!`);
 
-    joinBtn.addEventListener("click", () => joinChannel(id));
-    claimBtn.addEventListener("click", () => claimCoins(id));
+    currentChannel = null;
+    document.getElementById('confirmSection').style.display = 'none';
+    updateDisplay();
   });
+
+  document.getElementById('cancelBtn').addEventListener('click', () => {
+    currentChannel = null;
+    document.getElementById('confirmSection').style.display = 'none';
+  });
+
+  updateDisplay();
+});
+
+function claimClickReward() {
+  const today = new Date().toDateString();
+  const lastClickClaim = localStorage.getItem("clickRewardDate");
+  let clicks = parseInt(localStorage.getItem("clicks")) || 0;
+
+  if (clicks >= 50 && clicks <= 100 && lastClickClaim !== today) {
+    const reward = Math.floor(Math.random() * 11) + 50;
+    coins += reward;
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("clickRewardDate", today);
+    alert(`🎁 You earned ${reward} coins!`);
+    updateDisplay();
+  } else if (lastClickClaim === today) {
+    alert("✅ You've already claimed today's click reward.");
+  } else {
+    alert("❌ You need 50 - 100 clicks today to claim this reward.");
+  }
+}
+
+function claimDailyCoin() {
+  const today = new Date().toDateString();
+  const lastDaily = localStorage.getItem("dailyCoinDate");
+
+  if (lastDaily !== today) {
+    const dailyCoins = Math.floor(Math.random() * 6) + 25;
+    coins += dailyCoins;
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("dailyCoinDate", today);
+    alert(`✨ You got ${dailyCoins} daily coins!`);
+    updateDisplay();
+  } else {
+    alert("⏳ You've already claimed your daily coin today.");
+  }
+}
+
+document.getElementById('clickButton').addEventListener('click', () => {
+  let clicks = parseInt(localStorage.getItem("clicks")) || 0;
+  clicks++;
+  localStorage.setItem("clicks", clicks);
+  document.getElementById('clickCount').textContent = clicks;
 });
