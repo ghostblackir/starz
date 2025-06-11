@@ -12,7 +12,7 @@
       margin-top: 15px;
       font-weight: bold;
       font-size: 1.2rem;
-      color: #ffc107; /* طلایی */
+      color: #ffc107;
     }
   </style>
 </head>
@@ -24,11 +24,10 @@
     <div class="card-body">
       <h5 class="card-title">🎯 Join Our Channels</h5>
       <p class="card-text">Join any of the channels below and claim 100 ⭐ Starz for each!</p>
-      
       <button class="btn btn-primary mb-2" onclick="openChannel('aqay_ghost')">Join @aqay_ghost</button><br/>
       <button class="btn btn-primary mb-2" onclick="openChannel('zed_exe')">Join @zed_exe</button><br/>
       <button class="btn btn-primary mb-2" onclick="openChannel('blackghost_ir')">Join @blackghost_ir</button>
-  
+
       <div id="confirmSection" style="margin-top:15px; display:none;">
         <p>Did you join the channel? Click confirm to claim your 100 ⭐ Starz!</p>
         <button class="btn btn-success" id="confirmBtn">Confirm</button>
@@ -42,6 +41,8 @@
     <div class="card-body">
       <h5 class="card-title">🔥 Daily Click Challenge</h5>
       <p class="card-text">Click between 50 - 100 times today to earn 50-60 coins!</p>
+      <button id="clickButton" class="btn btn-secondary mb-2">Click Me!</button>
+      <p>Clicks today: <span id="clickCount">0</span></p>
       <button class="btn btn-primary" onclick="claimClickReward()">Claim Coins</button>
     </div>
   </div>
@@ -59,93 +60,8 @@
   <div id="balance">
     ⭐ Starz: <span id="starzDisplay">0</span> | 💰 Coins: <span id="coinsDisplay">0</span>
   </div>
-
-  <script>
-    let starz = parseFloat(localStorage.getItem("starz")) || 0;
-    let coins = parseInt(localStorage.getItem("coins")) || 0;
-    let currentChannel = null;
-
-    // نمایش مقدار سکه و استارز
-    function updateDisplay() {
-      document.getElementById('starzDisplay').textContent = starz;
-      document.getElementById('coinsDisplay').textContent = coins;
-    }
-
-    // ورود به کانال و دریافت استارز
-    function openChannel(channelName) {
-      if (localStorage.getItem(`joinedChannel_${channelName}`)) {
-        alert(`❌ You already claimed for @${channelName}`);
-        return;
-      }
-
-      currentChannel = channelName;
-
-      // باز کردن لینک کانال تلگرام در تب جدید
-      window.open(`https://t.me/${channelName}`, '_blank');
-
-      // نمایش بخش تایید
-      document.getElementById('confirmSection').style.display = 'block';
-    }
-
-    document.getElementById('confirmBtn').addEventListener('click', () => {
-      if (!currentChannel) return;
-
-      // دادن جایزه و ذخیره در localStorage
-      starz += 100;
-      localStorage.setItem("starz", starz);
-      localStorage.setItem(`joinedChannel_${currentChannel}`, "true");
-
-      alert(`🎉 You earned 100 Starz for joining @${currentChannel}!`);
-
-      currentChannel = null;
-      document.getElementById('confirmSection').style.display = 'none';
-      updateDisplay();
-    });
-
-    document.getElementById('cancelBtn').addEventListener('click', () => {
-      currentChannel = null;
-      document.getElementById('confirmSection').style.display = 'none';
-    });
-
-    // چالش کلیک روزانه
-    function claimClickReward() {
-      const today = new Date().toDateString();
-      const lastClickClaim = localStorage.getItem("clickRewardDate");
-      let clicks = parseInt(localStorage.getItem("clicks")) || 0;
-
-      if (clicks >= 50 && clicks <= 100 && lastClickClaim !== today) {
-        const reward = Math.floor(Math.random() * 11) + 50; // 50 - 60 coins
-        coins += reward;
-        localStorage.setItem("coins", coins);
-        localStorage.setItem("clickRewardDate", today);
-        alert(`🎁 You earned ${reward} coins!`);
-        updateDisplay();
-      } else if (lastClickClaim === today) {
-        alert("✅ You've already claimed today's click reward.");
-      } else {
-        alert("❌ You need 50 - 100 clicks today to claim this reward.");
-      }
-    }
-
-    // سکه روزانه
-    function claimDailyCoin() {
-      const today = new Date().toDateString();
-      const lastDaily = localStorage.getItem("dailyCoinDate");
-
-      if (lastDaily !== today) {
-        const dailyCoins = Math.floor(Math.random() * 6) + 25; // 25 - 30 coins
-        coins += dailyCoins;
-        localStorage.setItem("coins", coins);
-        localStorage.setItem("dailyCoinDate", today);
-        alert(`✨ You got ${dailyCoins} daily coins!`);
-        updateDisplay();
-      } else {
-        alert("⏳ You've already claimed your daily coin today.");
-      }
-    }
-
-    // نمایش مقدار اولیه
-    updateDisplay();
-  </script>
+  <a href="index.html" class="back-link">⬅ Back to Game</a>
+  <!-- اسکریپت جداگانه -->
+  <script src="js/coin.js"></script>
 </body>
 </html>
