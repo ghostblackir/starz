@@ -1,84 +1,132 @@
 let starz = parseFloat(localStorage.getItem("starz")) || 0;
-let coins = parseInt(localStorage.getItem("coins")) || 0;
-let currentChannel = null;
 
-function updateDisplay() {
-  document.getElementById('starzDisplay').textContent = starz;
-  document.getElementById('coinsDisplay').textContent = coins;
-}
+// نمایش Starz فعلی در console
+console.log(`Your current Starz: ${starz}`);
 
-function openChannel(channelName) {
-  if (localStorage.getItem(`joinedChannel_${channelName}`)) {
-    alert(`❌ You already claimed for @${channelName}`);
-    return;
+// تابع برای بروزرسانی نمایش Starz روی صفحه (اگر بخوای روی صفحه نمایش بدی)
+function updateStarzDisplay() {
+  const starzDisplay = document.getElementById("starzDisplay");
+  if (starzDisplay) {
+    starzDisplay.textContent = `Starz: ${Math.floor(starz)}`;
   }
-
-  currentChannel = channelName;
-  window.open(`https://t.me/${channelName}`, '_blank');
-  document.getElementById('confirmSection').style.display = 'block';
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById('confirmBtn').addEventListener('click', () => {
-    if (!currentChannel) return;
+// تابع برای بروزرسانی وضعیت دکمه‌های Claim تلگرام (کمرنگ/پررنگ)
+function updateClaimButtons() {
+  const claimButtons = document.querySelectorAll('button.btn-outline-light');
+  claimButtons.forEach((btn, index) => {
+    const key = `telegram_joined_${index + 1}`;
+    const claimed = localStorage.getItem(key);
+    if (claimed === new Date().toLocaleDateString()) {
+      btn.classList.remove('btn-outline-light');
+      btn.classList.add('btn-warning'); // رنگ پررنگ
+      btn.disabled = true;
+      btn.textContent = 'Claimed';
+    } else {
+      btn.classList.add('btn-outline-light');
+      btn.classList.remove('btn-warning');
+      btn.disabled = false;
+      btn.textContent = 'Claim';
+    }
+  });
 
-    starz += 100;
+  // برای دکمه گروه تلگرام
+  const groupBtn = document.querySelector('button[onclick="claimTelegramReward(\'group\')"]');
+  const groupClaimed = localStorage.getItem('telegram_group_joined');
+  if (groupBtn) {
+    if (groupClaimed === new Date().toLocaleDateString()) {
+      groupBtn.classList.remove('btn-outline-light');
+      groupBtn.classList.add('btn-primary');
+      groupBtn.disabled = true;
+      groupBtn.textContent = 'Claimed';
+    } else {
+      groupBtn.classList.add('btn-outline-light');
+      groupBtn.classList.remove('btn-primary');
+      groupBtn.disabled = false;
+      groupBtn.textContent = 'Claim';
+    }
+  }
+}
+
+// Daily Reward
+document.getElementById("dailyBtn").addEventListener("click", () => {
+  const last = localStorage.getItem("daily_reward");
+  const today = new Date().toLocaleDateString();
+
+  if (last === today) {
+    document.getElementById("dailyStatus").textContent = "You already claimed your reward today!";
+  } else {
+    starz += 5;
     localStorage.setItem("starz", starz);
-    localStorage.setItem(`joinedChannel_${currentChannel}`, "true");
-
-    alert(`🎉 You earned 100 Starz for joining @${currentChannel}!`);
-
-    currentChannel = null;
-    document.getElementById('confirmSection').style.display = 'none';
-    updateDisplay();
-  });
-
-  document.getElementById('cancelBtn').addEventListener('click', () => {
-    currentChannel = null;
-    document.getElementById('confirmSection').style.display = 'none';
-  });
-
-  updateDisplay();
+    localStorage.setItem("daily_reward", today);
+    document.getElementById("dailyStatus").textContent = "+5 Starz added to your account!";
+    updateStarzDisplay();
+  }
 });
 
-function claimClickReward() {
-  const today = new Date().toDateString();
-  const lastClickClaim = localStorage.getItem("clickRewardDate");
-  let clicks = parseInt(localStorage.getItem("clicks")) || 0;
+// Daily Challenge
+document.getElementById("challengeBtn").addEventListener("click", () => {
+  const clicks = parseInt(localStorage.getItem("clicks")) || 0;
+  const claimed = localStorage.getItem("challenge_claimed");
+  const today = new Date().toLocaleDateString();
 
-  if (clicks >= 50 && clicks <= 100 && lastClickClaim !== today) {
-    const reward = Math.floor(Math.random() * 11) + 50;
-    coins += reward;
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("clickRewardDate", today);
-    alert(`🎁 You earned ${reward} coins!`);
-    updateDisplay();
-  } else if (lastClickClaim === today) {
-    alert("✅ You've already claimed today's click reward.");
+  if (claimed === today) {
+    document.getElementById("challengeStatus").textContent = "You already claimed this challenge today!";
+  } else if (clicks >= 50) {
+    starz += 10;
+    localStorage.setItem("starz", starz);
+    localStorage.setItem("challenge_claimed", today);
+    document.getElementById("challengeStatus").textContent = "+10 Starz for completing the challenge!";
+    updateStarzDisplay();
   } else {
-    alert("❌ You need 50 - 100 clicks today to claim this reward.");
+    document.getElementById("challengeStatus").textContent = `You need ${50 - clicks} more clicks to claim.`;
+  }
+});
+
+// Telegram Channel or Group Claim
+function claimTelegramReward(id) {
+  const today = new Date().toLocaleDateString();
+  const key = (typeof id === 'number') ? `telegram_joined_${id}` : `telegram_group_joined`;
+  const statusId = (typeof id === 'number') ? "telegramStatus" : "groupStatus";
+
+  const already = localStorage.getItem(key);
+  if (already === today) {
+    document.getElementById(statusId).textContent = "You already claimed today!";
+  } else {
+    starz += 100;
+    localStorage.setItem("starz", starz);
+    localStorage.setItem(key, today);
+    document.getElementById(statusId).textContent = "+100 Starz added!";
+    updateStarzDisplay();
+    updateClaimButtons();
   }
 }
 
-function claimDailyCoin() {
-  const today = new Date().toDateString();
-  const lastDaily = localStorage.getItem("dailyCoinDate");
+window.addEventListener("load", () => {
+  const lastVisit = parseInt(localStorage.getItem("lastVisit")) || Date.now();
+  const now = Date.now();
+  const diffInSeconds = Math.floor((now - lastVisit) / 1000);
 
-  if (lastDaily !== today) {
-    const dailyCoins = Math.floor(Math.random() * 6) + 25;
-    coins += dailyCoins;
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("dailyCoinDate", today);
-    alert(`✨ You got ${dailyCoins} daily coins!`);
-    updateDisplay();
-  } else {
-    alert("⏳ You've already claimed your daily coin today.");
+  const energyRechargeRate = 0.1;
+  let timer = parseFloat(localStorage.getItem("energyTimer")) || 100;
+
+  const energyToAdd = diffInSeconds * energyRechargeRate;
+  if (timer < 100) {
+    timer += energyToAdd;
+    if (timer > 100) timer = 100;
+    localStorage.setItem("energyTimer", timer);
   }
-}
 
-document.getElementById('clickButton').addEventListener('click', () => {
-  let clicks = parseInt(localStorage.getItem("clicks")) || 0;
-  clicks++;
-  localStorage.setItem("clicks", clicks);
-  document.getElementById('clickCount').textContent = clicks;
+  // نمایش انرژی روی صفحه اگر المان energyDisplay وجود داشته باشد
+  const energyDisplay = document.getElementById("energyDisplay");
+  if (energyDisplay) {
+    energyDisplay.textContent = `Energy: ${Math.floor(timer)}`;
+  }
+
+  // ذخیره زمان آخرین بازدید
+  localStorage.setItem("lastVisit", now);
+
+  // بروزرسانی وضعیت دکمه‌های Claim و نمایش Starz
+  updateClaimButtons();
+  updateStarzDisplay();
 });
